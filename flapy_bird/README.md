@@ -7,5 +7,7 @@ Flutter ile yapıldı.
 ![resim2](https://github.com/furkancan2107/flutter_flapy_birdv2_hikobababird/blob/main/flapy_bird/assets/2.png)
 
 # Güncellemeler Gelecek...
-
+-Karekterler(Mazo Baba vs)
+-Karekter Özelleştirme
+ Özellikleri Gelecek
 

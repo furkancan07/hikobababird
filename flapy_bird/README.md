@@ -1,16 +1,13 @@
-# flapy_bird
+# Hiko Baba Uçuyor
 
-A new Flutter project.
+Flutter ile yapıldı.
 
-## Getting Started
+## RESİMLER
+![resim1](https://github.com/furkancan2107/flutter_flapy_birdv2_hikobababird/blob/main/flapy_bird/assets/1.png)
+![resim2](https://github.com/furkancan2107/flutter_flapy_birdv2_hikobababird/blob/main/flapy_bird/assets/2.png)
 
-This project is a starting point for a Flutter application.
+# Güncellemeler Gelecek...
+-Karekterler(Mazo Baba vs)
+-Karekter Özelleştirme
+ Özellikleri Gelecek
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

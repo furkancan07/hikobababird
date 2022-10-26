@@ -3,11 +3,14 @@
 import 'dart:async';
 
 import 'package:flapy_bird/bariyer.dart';
+import 'package:flapy_bird/karekter.dart';
 import 'package:flapy_bird/kus.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  // Karekter sınıfından karekterimizi seçeceğiz
+  final String karekter;
+  const HomePage({super.key, required this.karekter});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -19,15 +22,15 @@ class _HomePageState extends State<HomePage> {
   double b = 0;
   double kusPozisyon = kusY;
   double uzunluk = 0;
-  double hiz = 3;
-  double yerCekimi = -7;
+  double hiz = 2.7;
+  double yerCekimi = -4.9;
   double zaman = 0;
   bool oyunBasladiMi = false;
   static double birinci = 1.8;
   double ikinci = birinci + 1.5;
   double _skor = 0;
   double _bestScore = 0;
-  //-gt^2*1/2+vt*1/2
+  //-gt^2*1/2+vt
   void _showDialog() {
     // flutter defined function
     showDialog(
@@ -35,10 +38,23 @@ class _HomePageState extends State<HomePage> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
+          backgroundColor: Colors.brown.shade500,
           title: Text("Game Over"),
           content: Text("ÖLDÜN YETİM"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
+            TextButton(
+                onPressed: () {
+                  setState(() {
+                    reset();
+                  });
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return Karekter();
+                    },
+                  ));
+                },
+                child: Text("Karekter Seçimine Geri Dön")),
             TextButton(child: Text("Oyna"), onPressed: reset),
           ],
         );
@@ -46,16 +62,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+// Oyunun Algoritması
   void run() {
     oyunBasladiMi = true;
     Timer.periodic(
       Duration(milliseconds: 50),
       (timer) {
         setState(() {
+          //KUŞUN HAVADA KALMA SÜRESİNİ ATIŞLAR FORMÜLÜ İLE SAĞLADIM
           uzunluk = (yerCekimi * zaman * zaman) + (hiz * zaman);
           kusY = kusPozisyon - uzunluk;
           zaman += 0.01;
+          if (_skor % 10 == 0) {
+            hiz += 0.001;
+          }
         });
+        // BARİYERLERİ SONSUZ DÖNGÜ İÇİNE KOYDUK
         setState(() {
           if (birinci < -2) {
             birinci += 4.5;
@@ -80,12 +102,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool kusOldumu() {
+    // KUSUN ÜST VE ALT KISIMLARA DEĞDİĞİNDE ÖLMESİNİ SAĞLAYAN ALGORİTMA
     if (kusY < -1 || kusY > 1) {
       return true;
     }
+    // KUSUN BARİYERLERE ÇARPINCA ÖLMESİNİ SAĞLAYAN ALGORİTMA
     if (birinci < 0.2 && birinci > -0.2) {
       setState(() {
-        _skor = _skor + 1;
+        _skor = _skor + 0.1;
+        /*if (_skor % 10 == 0) {
+          _skor = _skor / 10;
+        }*/
       });
 
       if (kusY < -0.45 || kusY > 0.23) {
@@ -94,7 +121,7 @@ class _HomePageState extends State<HomePage> {
     }
     if (ikinci < 0.2 && ikinci > -0.2) {
       setState(() {
-        _skor = _skor + 1;
+        _skor = _skor + 0.1;
       });
 
       if (kusY < -0.69 || kusY > -0.20) {
@@ -132,8 +159,9 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.blue,
                   child: Center(
                     child: Stack(children: [
-                      Center(child: Text(kusY.toString())),
-                      Kus(kusKonum: kusY),
+                      Center(child: Text(kusY.toStringAsFixed(1))),
+                      //KAREKTERİ KUŞ SINIFINA GÖDERİYORUZ SON İŞLEMLER ORDA
+                      Kus(kusKonum: kusY, kahraman: widget.karekter),
                       AnimatedContainer(
                         alignment: Alignment(birinci, 1.1),
                         duration: Duration(),
@@ -169,22 +197,49 @@ class _HomePageState extends State<HomePage> {
             Expanded(
                 child: Container(
               color: Colors.brown,
-              child: Row(
+              child: Column(
                 children: [
-                  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: containerOlustur(Text("Skor: $_skor"))),
-                  SizedBox(
-                    width: 20,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: containerOlustur(
+                                Text("Skor: ${(_skor.toStringAsFixed(0))}"))),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: containerOlustur(Text(
+                                "En iyi Skor: ${(_bestScore.toStringAsFixed(0))}"))),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: containerOlustur(Text("Zorluk: Kolay"))),
+                      ),
+                    ],
                   ),
-                  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child:
-                          containerOlustur(Text("En iyi Skor: $_bestScore"))),
-                  SizedBox(
-                    width: 20,
+                  SizedBox(height: 50),
+                  Expanded(
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "@FC 2022",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        )),
                   ),
-                  containerOlustur(Text("Zorluk: Kolay")),
                 ],
               ),
             ))
